@@ -1,0 +1,19 @@
+{
+  "name": "jsdoc-i18n-plugin",
+  "version": "0.0.1",
+  "description": "A plugin for jsdoc to handle i18n",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "jsdoc",
+    "plugin",
+    "i18n"
+  ],
+  "author": "villa.gao <jky239@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "i18n-2": "~0.4.5"
+  }
+}
