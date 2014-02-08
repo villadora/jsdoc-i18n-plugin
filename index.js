@@ -24,29 +24,59 @@ if(!fs.existsSync(directory))
 var localesData = {};
 
 exports.handlers = {
+    symbolFound: function(e) {
+    },
     newDoclet: function(e) {
+        var doc = e.doclet;
         // e.doclet will refer to the newly created doclet
         // you can read and modify properties of that doclet if you wish
-        var desc = e.doclet.description;
+        var desc = doc.description,
+            key = getLocaleFile(path.join(e.doclet.meta.path, e.doclet.meta.filename));
         if (typeof desc  === 'string') {
-            var key = getLocaleFile(path.join(e.doclet.meta.path, e.doclet.meta.filename)),
-                data = localesData[key];
-            
-            if(data.hasOwnProperty(desc)) {
-                if(desc != data[desc])
-                    e.doclet.description = desc;
-            }else {
-                data[desc] = desc;
-            }
+            doc.description = transDesc(key, desc);
         }else {
             // undefined
         }
+
+        // class desc
+        if(typeof doc.classdesc === 'string') {
+            doc.classdesc = transDesc(key, doc.classdesc);
+        }
+
+        // properties
+        if(doc.properties && doc.properties.length) {
+            for(var i = 0, len = doc.properties.length; i < len; ++i) {
+                var prop = doc.properties[i];
+                if(prop.description)
+                    prop.description = transDesc(key, prop.description);
+            }
+        }
+
+        // params
+        if(doc.params && doc.params.length) {
+            for(var i = 0, len = doc.params.length; i < len; ++i) {
+                var param = doc.params[i];
+                if(param.description)
+                    param.description = transDesc(key, param.description);
+            }
+        }
+        
+        // returns
+        if(doc.returns && doc.returns.length) {
+            for(var i = 0, len = doc.returns.length; i < len; ++i) {
+                var ret = doc.returns[i];
+                if(ret.description)
+                    ret.description = transDesc(key, ret.description);
+            }
+        }
+        
+
     },
     fileBegin: function(e) {
         var key = getLocaleFile(e.filename), data;
         if(fs.existsSync(key)) {
             try {
-                data = JSON.parse(fs.readFileSync(key));
+                data = JSON.parse(fs.readFileSync(key, 'utf8'));
             }catch(e) {
                 console.warn(e);
             }
@@ -56,8 +86,15 @@ exports.handlers = {
     },
     fileComplete: function(e) {
         var key = getLocaleFile(e.filename),
-            data = localesData[key];
-        if(data) {
+            data = localesData[key], empty = true;
+
+        for(var p in data) {
+            empty = false;
+            break;
+        }
+            
+
+        if(!empty) {
             var dir  = path.dirname(key);
             if(!fs.existsSync(dir)) {
                 fs.mkPath(dir);
@@ -81,4 +118,14 @@ function getLocaleFile(filename) {
 
 
 
+function transDesc(key, desc) {
+    var data = localesData[key];
+    if(data.hasOwnProperty(desc)) {
+        if(desc != data[desc])
+            return data[desc];
+    }else {
+        data[desc] = desc;
+    }
 
+    return desc;
+}
