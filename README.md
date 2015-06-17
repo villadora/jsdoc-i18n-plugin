@@ -7,7 +7,7 @@ JsDoc i18n plugin is to provide i18n translates for jsdocs.
 
 Install with npm:
 
-    npm install jsdoc-i18n-plugins --save
+    npm install jsdoc-i18n-plugin --save
     
     
 ## Usage
