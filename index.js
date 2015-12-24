@@ -1,5 +1,6 @@
 var path = require('path'), 
     fs = require('fs'),
+    mkdirp = require('mkdirp'),
     join = path.join,
     conf = env.conf.i18n || {},
     cwd = process.cwd();
@@ -15,7 +16,7 @@ directory = path.resolve(cwd, directory);
 directory = path.join(directory, conf.locale || 'en_US');
 
 if(!fs.existsSync(directory))
-    fs.mkPath(directory);
+    mkdirp.sync(directory);
 
 
 // normalize extension
@@ -97,7 +98,7 @@ exports.handlers = {
         if(!empty) {
             var dir  = path.dirname(key);
             if(!fs.existsSync(dir)) {
-                fs.mkPath(dir);
+                mkdirp.sync(dir);
             }
 
             fs.writeFileSync(key, JSON.stringify(data, null, 4), 'utf8');
