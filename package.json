@@ -1,6 +1,6 @@
 {
   "name": "jsdoc-i18n-plugin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A plugin for jsdoc to handle i18n translations",
   "main": "index.js",
   "scripts": {
